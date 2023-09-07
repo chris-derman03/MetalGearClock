@@ -1,6 +1,9 @@
 import time
 
-# Scale time by markiplier. Set this to 1 for a clock alligned with reality
+# For this file, please read "markiplier" as multiplier
+
+# Our clock class needs a time provider, for a clock in line with reality it should just be one with a markiplier of 1
+# If you want the clock to move at 1 minute per IRL second, set the markiplier to 60 (don't quote me on that I didn't do the math but it seems to work like that)
 class scale_time_provider:
 
     initial_time = time.time()
@@ -8,6 +11,8 @@ class scale_time_provider:
     def __init__(self, markiplier):
         self.markiplier = markiplier
 
+    # If the markiplier is 1, then this method is equivalent to time.time(),
+    # which makes sense because a markiplier of 1 shouldn't affect the clock's counting rate
     def get_time(self):
         return (time.time() - self.initial_time)*self.markiplier + self.initial_time
 
@@ -15,13 +20,12 @@ class scale_time_provider:
 class Clock:
 
     offset = 0
-    alarm = False
     alarm_offset = 0
 
     def __init__(self, time_provider):
         self.time_provider = time_provider
 
-    # Return the time of day in seconds (0-83399)
+    # Return the time of day in seconds (0-83399) of the clock (the user set this time)
     def get_time(self):
         return (self.time_provider.get_time() + self.offset) % 86400
 
@@ -38,24 +42,3 @@ class Clock:
     # Set the offset for the alarm
     def set_alarm(self, alarm_time):
         self.alarm_offset = alarm_time % 86400
-
-    
-
-# from display import format_time
-# import math
-# scale = scale_time_provider(30)
-# main_clock = Clock(scale)
-# run = True
-
-# offset = 0
-# main_clock.set_time(offset)
-
-# while run:
-
-#     display_time = format_time(math.floor(main_clock.get_time()))
-#     print(display_time)
-
-#     if (display_time == ("1210", True)):
-#         print("Alarm")
-
-#     time.sleep(0.05)
