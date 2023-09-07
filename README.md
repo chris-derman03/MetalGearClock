@@ -1,5 +1,5 @@
 # MetalGearClock
-Code for the project's clock and user display.
+Code for the project's clock and user display. Run main.py to start the clock.
 
 The game Metal Gear Solid has an in-game timer countdown for certain game events. We wanted to turn that game timer into a functioning alarm clock. There was no help for this online, so we made it from scratch. In this repository is the code and all necessary files
 for the software part of the project.
