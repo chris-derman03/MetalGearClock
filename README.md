@@ -17,3 +17,10 @@ Once the alarm goes off, the only way to turn it off is to press this toggle aga
 Alternatively, the user may press spacebar to snooze for 5 minutes.
 
 (The inputs, which are just left clicks and space bar presses, are temporary and are subject to change depending on how you want to implement the physical aspect of the project.)
+
+
+
+CLOCK FUNCTION:
+The clock's internal time is just the CPU's internal clock. Any time the user changes the time, they are changing the offset from that CPU time.
+If the CPU time is 6:00 AM UTC, and the user wants the clock to show 8:23 AM, they can change the time easily, and the clock will show 8:23 AM. In the background, the clock class' offset attribute
+is 8580, which is two hours and twenty three minutes in seconds.
