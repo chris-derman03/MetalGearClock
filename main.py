@@ -19,10 +19,24 @@ from button import ButtonManager
 # Window Stuff
 #=============================================
 
-SCREEN_WIDTH=970
-SCREEN_HEIGHT=780
-# screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT), pygame.FULLSCREEN)
+screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+
+# Actual pixel dimesions of the game
+GAME_WIDTH=970
+GAME_HEIGHT=780
+
+SCREEN_WIDTH = screen.get_width()
+SCREEN_HEIGHT = screen.get_height()
+
+# Scale the game up to or down to the screen
+SCALE = SCREEN_HEIGHT / GAME_HEIGHT
+SCALED_HEIGHT = SCREEN_HEIGHT
+SCALED_WIDTH = int(GAME_WIDTH * SCALE)
+
+# Surface to render the game on, then surface to scale that game to
+game_surface = pygame.Surface((GAME_WIDTH, GAME_HEIGHT))
+screen_surface = pygame.Surface((SCALED_WIDTH,SCALED_HEIGHT))
+
 pygame.display.set_caption("Alarm Clock")
 
 DEFAULT_ALLOWED_EVENTS = [pygame.QUIT, pygame.MOUSEBUTTONDOWN, pygame.KEYDOWN]
@@ -75,7 +89,7 @@ def set_background(time, animation_frames, animation_duration=0.8):
 
         time /= animation_duration/len(animation_frames)
         idx = math.floor(time) % len(animation_frames)
-        screen.blit(animation_frames[idx], (100,0))
+        game_surface.blit(animation_frames[idx], (0,0))
 
 
 
@@ -134,15 +148,15 @@ def draw_text(time, color="Black"):
     for i in range(len(digits)):
         # if (digits[i] != ""):
         img = time_font.render(digits[i], False, color)
-        screen.blit(img,LOCATIONS[i])
+        game_surface.blit(img,LOCATIONS[i])
 
     # blit (draw) AM or PM at the manually discovered pixel location
     if (am):
         am_text = ampm_font.render("A M", True, color)
-        screen.blit(am_text, (650,275))
+        game_surface.blit(am_text, (650,275))
     else:
         pm_text = ampm_font.render("P M", True, color)
-        screen.blit(pm_text, (650,275))
+        game_surface.blit(pm_text, (650,275))
 
 
 
@@ -264,13 +278,19 @@ snooze_alarm_time = -1
 offset = 0
 animation_start = main_clock.get_time()
 
-# # Startup animation
-# while main_clock.get_time() - animation_start <= 5:
 
-#     set_background(main_clock.get_time(), JAMMING_ANIMATION, 5)
-#     pygame.display.update()
+# Startup animation
+while main_clock.get_time() - animation_start <= 5:
 
-#     time.sleep(0.05)
+    set_background(main_clock.get_time(), JAMMING_ANIMATION, 5)
+
+    # Display update sequence
+    pygame.transform.scale(game_surface, (SCALED_WIDTH, SCALED_HEIGHT), screen_surface)
+    screen.blit(screen_surface, ((SCREEN_WIDTH - SCALED_WIDTH)//2,0))
+    pygame.display.flip()
+    pygame.display.update()
+
+    time.sleep(0.05)
 
 while run:
 
@@ -294,17 +314,17 @@ while run:
         # Which exit button to draw
         if (change_time):    
             # Draw exit button
-            changeTime.draw(screen)
+            changeTime.draw(game_surface)
         else:
-            setAlarm.draw(screen)
+            setAlarm.draw(game_surface)
 
         # Draw the time changing buttons
-        hourUp.draw(screen)
-        hourDown.draw(screen)
-        minuteUp.draw(screen)
-        minuteDown.draw(screen)
-        minuteUpLarge.draw(screen)
-        minuteDownLarge.draw(screen)
+        hourUp.draw(game_surface)
+        hourDown.draw(game_surface)
+        minuteUp.draw(game_surface)
+        minuteDown.draw(game_surface)
+        minuteUpLarge.draw(game_surface)
+        minuteDownLarge.draw(game_surface)
 
     # Alarm phase
     elif (alarm_phase):
@@ -317,26 +337,26 @@ while run:
 
         # Draw the alarm toggle button
         if (alarm):
-            alarmOn.draw(screen)
+            alarmOn.draw(game_surface)
         else:
-            alarmOff.draw(screen)
+            alarmOff.draw(game_surface)
 
     # Default phase (time counting)
     else:
         
         # Clear the screen and add all buttons
         set_background(main_clock.get_time(), EVASION_ANIMATION)
-        changeTime.draw(screen)
-        setAlarm.draw(screen)
+        changeTime.draw(game_surface)
+        setAlarm.draw(game_surface)
 
         # Render new time
         draw_text(main_clock.get_time())
 
         # Draw the alarm toggle button
         if (alarm):
-            alarmOn.draw(screen)
+            alarmOn.draw(game_surface)
         else:
-            alarmOff.draw(screen)
+            alarmOff.draw(game_surface)
 
         # If alarm is on, check if we should set off the alarm
         if (alarm):
@@ -384,8 +404,13 @@ while run:
         # If the user clicks
         elif (event.type == pygame.MOUSEBUTTONDOWN):
 
-            # get cursor position
-            pos = event.pos
+            # cursor coords on the full screen of your monitor
+            raw_pos = event.pos
+
+            # scale those coords down to the scaled surface
+            SCREEN_PADDING = (SCREEN_WIDTH-SCALED_WIDTH)//2
+            pos = (int((raw_pos[0] - SCREEN_PADDING) * (GAME_WIDTH/SCALED_WIDTH)), 
+                   int(raw_pos[1]*(GAME_HEIGHT/SCREEN_HEIGHT)))
 
             # If the cursor was over the changeTime button
             if (changeTime.is_clicked(pos)):
@@ -438,6 +463,10 @@ while run:
             elif (minuteDownLarge.is_clicked(pos)):
                 offset = (offset - 600) % 86400
 
+    # Display update sequence
+    pygame.transform.scale(game_surface, (SCALED_WIDTH, SCALED_HEIGHT), screen_surface)
+    screen.blit(screen_surface, ((SCREEN_WIDTH - SCALED_WIDTH)//2,0))
+    pygame.display.flip()
     pygame.display.update()
 
     # 20 Ticks per second
