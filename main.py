@@ -21,7 +21,8 @@ from button import ButtonManager
 
 SCREEN_WIDTH=970
 SCREEN_HEIGHT=780
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+# screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT), pygame.FULLSCREEN)
 pygame.display.set_caption("Alarm Clock")
 
 DEFAULT_ALLOWED_EVENTS = [pygame.QUIT, pygame.MOUSEBUTTONDOWN, pygame.KEYDOWN]
@@ -74,7 +75,7 @@ def set_background(time, animation_frames, animation_duration=0.8):
 
         time /= animation_duration/len(animation_frames)
         idx = math.floor(time) % len(animation_frames)
-        screen.blit(animation_frames[idx], (0,0))
+        screen.blit(animation_frames[idx], (100,0))
 
 
 
@@ -263,13 +264,13 @@ snooze_alarm_time = -1
 offset = 0
 animation_start = main_clock.get_time()
 
-# Startup animation
-while main_clock.get_time() - animation_start <= 5:
+# # Startup animation
+# while main_clock.get_time() - animation_start <= 5:
 
-    set_background(main_clock.get_time(), JAMMING_ANIMATION, 5)
-    pygame.display.update()
+#     set_background(main_clock.get_time(), JAMMING_ANIMATION, 5)
+#     pygame.display.update()
 
-    time.sleep(0.05)
+#     time.sleep(0.05)
 
 while run:
 
