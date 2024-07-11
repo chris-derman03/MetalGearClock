@@ -356,13 +356,13 @@ while run:
     # Event Handler
     for event in pygame.event.get():
 
-        # If red X is clicked, exit the game
         if (event.type == pygame.QUIT):
             run = False
             pygame.quit()
 
-        # Spacebar is our snooze button
         elif (event.type == pygame.KEYDOWN):
+
+            # Spacebar is our snooze button
             if (event.key == pygame.K_SPACE):
                 
                 # Only snooze if we are in the alarm phase
@@ -375,6 +375,10 @@ while run:
                     # Set a new alarm-time to 5 minutes in the future
                     # We don't directly change the alarm time
                     snooze_alarm_time = main_clock.get_time() // 60 + 5
+
+            # F for fullscreen
+            if (event.key == pygame.K_f):
+                pygame.display.toggle_fullscreen()
 
         # If the user clicks
         elif (event.type == pygame.MOUSEBUTTONDOWN):
