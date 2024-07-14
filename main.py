@@ -398,8 +398,13 @@ while run:
                     snooze_alarm_time = main_clock.get_time() // 60 + 5
 
             # F for fullscreen
-            if (event.key == pygame.K_f):
+            elif (event.key == pygame.K_f):
                 pygame.display.toggle_fullscreen()
+
+            # Q to debug quit
+            elif (event.key == pygame.K_q):
+                run = False
+                pygame.quit()
 
         # If the user clicks
         elif (event.type == pygame.MOUSEBUTTONDOWN):
