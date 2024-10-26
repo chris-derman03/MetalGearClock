@@ -18,6 +18,9 @@ Alternatively, the user may press spacebar to snooze for 5 minutes.
 
 (The inputs, which are just left clicks and space bar presses, are temporary and are subject to change depending on how you want to implement the physical aspect of the project.)
 
+![image](https://github.com/user-attachments/assets/b339376b-4760-4d3e-8a5c-0f2264ef08df)
+
+
 
 
 CLOCK FUNCTION:
